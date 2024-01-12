@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.freddev.pokemonapi.databinding.ActivityMainBinding
+import com.freddev.pokemonapi.model.local.CharactersDatabase
 import com.freddev.pokemonapi.viewmodel.MarvelViewModel
 
 class MainActivity : AppCompatActivity() {

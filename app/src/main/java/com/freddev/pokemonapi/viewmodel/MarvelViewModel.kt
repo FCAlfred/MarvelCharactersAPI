@@ -1,13 +1,16 @@
 package com.freddev.pokemonapi.viewmodel
 
+import android.app.Application
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.freddev.pokemonapi.model.local.CharactersDatabase
 import com.freddev.pokemonapi.model.network.MarvelRepository
 import com.freddev.pokemonapi.model.network.data.MarvelCharacter
 
-class MarvelViewModel : ViewModel() {
+class MarvelViewModel() : ViewModel() {
 
     private var _charactersList = MutableLiveData<List<MarvelCharacter>>()
     val charactersList: LiveData<List<MarvelCharacter>> get() = _charactersList
