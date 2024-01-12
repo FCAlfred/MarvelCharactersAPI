@@ -12,7 +12,6 @@ class MarvelViewModel : ViewModel() {
     private var _charactersList = MutableLiveData<List<MarvelCharacter>>()
     val charactersList: LiveData<List<MarvelCharacter>> get() = _charactersList
 
-
     init {
         getCharacters()
     }
@@ -28,5 +27,4 @@ class MarvelViewModel : ViewModel() {
             }
         )
     }
-
 }

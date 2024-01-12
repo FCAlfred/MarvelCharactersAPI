@@ -1,28 +1,39 @@
 package com.freddev.pokemonapi
 
 import android.os.Bundle
-import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
+import com.freddev.pokemonapi.databinding.ActivityMainBinding
+import com.freddev.pokemonapi.model.network.data.MarvelCharacter
+import com.freddev.pokemonapi.view.MovieActions
+import com.freddev.pokemonapi.view.adapters.CharactersAdapter
 import com.freddev.pokemonapi.viewmodel.MarvelViewModel
 
+class MainActivity : AppCompatActivity(), MovieActions {
 
-class MainActivity : AppCompatActivity() {
-
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var charactersAdapter: CharactersAdapter
     private lateinit var viewModel: MarvelViewModel
 
-    override
-    fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        binding = ActivityMainBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(binding.root)
 
         viewModel = ViewModelProvider(this)[MarvelViewModel::class.java]
-        val textView = findViewById<TextView>(R.id.text_view)
+        charactersAdapter = CharactersAdapter(emptyList(), this)
+        binding.recyclerHeroes.layoutManager = GridLayoutManager(this, 3)
+        binding.recyclerHeroes.adapter = charactersAdapter
 
-        viewModel.charactersList.observe(this, Observer {
-            textView.text = it[0].name
-        })
+        viewModel.charactersList.observe(this) { marvelList ->
+            charactersAdapter.updateList(marvelList)
+            Toast.makeText(this, "elements:${marvelList.size}", Toast.LENGTH_SHORT).show()
+        }
+    }
 
+    override fun onClickedChar(selectedChar: MarvelCharacter) {
+        Toast.makeText(this, "Clicked ${selectedChar.name}", Toast.LENGTH_SHORT).show()
     }
 }
