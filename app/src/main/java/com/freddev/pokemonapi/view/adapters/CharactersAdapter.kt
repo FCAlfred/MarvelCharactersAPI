@@ -5,11 +5,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.freddev.pokemonapi.databinding.ItemCharBinding
-import com.freddev.pokemonapi.model.network.data.MarvelCharacter
+import com.freddev.pokemonapi.model.local.MarvelCharacterEntity
 import com.freddev.pokemonapi.view.CharacterActions
 
 class CharactersAdapter(
-    private var characterList: List<MarvelCharacter>,
+    private var characterList: List<MarvelCharacterEntity>,
     private val callback: CharacterActions
 ) : RecyclerView.Adapter<CharactersViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CharactersViewHolder {
@@ -27,7 +27,7 @@ class CharactersAdapter(
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateList(updatedList: List<MarvelCharacter>) {
+    fun updateList(updatedList: List<MarvelCharacterEntity>) {
         characterList = updatedList
         notifyDataSetChanged()
     }

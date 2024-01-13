@@ -8,8 +8,11 @@ import androidx.room.Query
 @Dao
 interface CharacterDao {
     @Query("SELECT * FROM heroes")
-    suspend fun getCharacters(): List<LocalCharactersEntity>
+    suspend fun getCharacters(): List<MarvelCharacterEntity>
+
+    @Query("SELECT * FROM heroes WHERE id=:charId")
+    suspend fun getSpecificCharacter(charId: Int): MarvelCharacterEntity
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun upsertCharacters(chars: List<LocalCharactersEntity>)
+    suspend fun upsertCharacters(chars: List<MarvelCharacterEntity>)
 }

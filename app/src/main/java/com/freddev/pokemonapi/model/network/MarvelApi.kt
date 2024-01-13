@@ -1,6 +1,6 @@
 package com.freddev.pokemonapi.model.network
 
-import com.freddev.pokemonapi.model.network.data.MarvelCharacter
+import com.freddev.pokemonapi.model.local.MarvelCharacterEntity
 import com.freddev.pokemonapi.model.network.data.MarvelResponse
 import retrofit2.Call
 import retrofit2.http.GET
@@ -12,5 +12,5 @@ interface MarvelApi {
         @Query("apikey") apiKey: String,
         @Query("ts") timestamp: String,
         @Query("hash") hash: String
-    ): Call<MarvelResponse<MarvelCharacter>>
+    ): Call<MarvelResponse<MarvelCharacterEntity>>
 }

@@ -1,24 +1,21 @@
 package com.freddev.pokemonapi.view.fragments
 
-import com.freddev.pokemonapi.model.local.LocalCharactersEntity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.room.Room
-import com.freddev.pokemonapi.MainActivity
 import com.freddev.pokemonapi.databinding.FragmentCharactersListBinding
-import com.freddev.pokemonapi.extra.toLocalCharactersEntity
 import com.freddev.pokemonapi.model.local.CharactersDatabase
-import com.freddev.pokemonapi.model.network.data.MarvelCharacter
+import com.freddev.pokemonapi.model.local.MarvelCharacterEntity
 import com.freddev.pokemonapi.view.CharacterActions
 import com.freddev.pokemonapi.view.adapters.CharactersAdapter
+import com.freddev.pokemonapi.viewmodel.CharacterViewModelFactory
 import com.freddev.pokemonapi.viewmodel.MarvelViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,7 +27,7 @@ class CharactersListFragment : Fragment(), CharacterActions {
     private var _binding: FragmentCharactersListBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: MarvelViewModel by viewModels()
+    private lateinit var viewModel: MarvelViewModel
     private lateinit var charactersDatabase: CharactersDatabase
 
     override fun onCreateView(
@@ -38,12 +35,16 @@ class CharactersListFragment : Fragment(), CharacterActions {
     ): View {
         _binding = FragmentCharactersListBinding.inflate(inflater, container, false)
         charactersDatabase = CharactersDatabase.getInstance(requireContext())
+        viewModel =
+            ViewModelProvider(
+                this,
+                CharacterViewModelFactory(requireContext())
+            )[MarvelViewModel::class.java]
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setUiElements()
     }
 
@@ -52,14 +53,12 @@ class CharactersListFragment : Fragment(), CharacterActions {
         _binding = null
     }
 
-    override fun onClickedChar(selectedChar: MarvelCharacter) {
-
-
+    override fun onClickedChar(selectedChar: MarvelCharacterEntity) {
         val action =
-                    CharactersListFragmentDirections.actionCharactersListFragmentToCharacterDetailsFragment(
-                        selectedChar.id
-                    )
-                findNavController().navigate(action)
+            CharactersListFragmentDirections.actionCharactersListFragmentToCharacterDetailsFragment(
+                selectedChar.id
+            )
+        findNavController().navigate(action)
     }
 
     private fun setUiElements() {
@@ -67,18 +66,16 @@ class CharactersListFragment : Fragment(), CharacterActions {
         binding.recyclerHeroes.layoutManager = GridLayoutManager(requireContext(), 3)
         binding.recyclerHeroes.adapter = charactersAdapter
         viewModel.charactersList.observe(viewLifecycleOwner) { marvelList ->
-            charactersAdapter.updateList(marvelList)
-            val selectedCharInfo: List<LocalCharactersEntity> =
-                marvelList.map { it.toLocalCharactersEntity() }
-            Toast.makeText(
-                requireContext(),
-                "Lista Nueva:$selectedCharInfo",
-                Toast.LENGTH_SHORT
-            ).show()
-            lifecycleScope.launch {
-                withContext(Dispatchers.IO) {
-                    charactersDatabase.getCharacterDao().upsertCharacters(selectedCharInfo)
+            if (marvelList.isNotEmpty()) {
+                charactersAdapter.updateList(marvelList)
+                lifecycleScope.launch {
+                    withContext(Dispatchers.IO) {
+                        charactersDatabase.getCharacterDao().upsertCharacters(marvelList)
+                    }
                 }
+            } else {
+                Toast.makeText(requireContext(), "No Internet Connection", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }

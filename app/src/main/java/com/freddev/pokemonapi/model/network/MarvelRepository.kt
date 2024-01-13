@@ -1,6 +1,6 @@
 package com.freddev.pokemonapi.model.network
 
-import com.freddev.pokemonapi.model.network.data.MarvelCharacter
+import com.freddev.pokemonapi.model.local.MarvelCharacterEntity
 import com.freddev.pokemonapi.model.network.data.MarvelResponse
 import retrofit2.Call
 import retrofit2.Callback
@@ -26,14 +26,14 @@ object MarvelRepository {
     }
 
     fun getMarvelCharacters(
-        onSuccess: (List<MarvelCharacter>) -> Unit,
+        onSuccess: (List<MarvelCharacterEntity>) -> Unit,
         onError: (Throwable) -> Unit
     ) {
         marvelApi.getCharacters(apiKey, timestamp, hash)
-            .enqueue(object : Callback<MarvelResponse<MarvelCharacter>> {
+            .enqueue(object : Callback<MarvelResponse<MarvelCharacterEntity>> {
                 override fun onResponse(
-                    call: Call<MarvelResponse<MarvelCharacter>>,
-                    response: Response<MarvelResponse<MarvelCharacter>>
+                    call: Call<MarvelResponse<MarvelCharacterEntity>>,
+                    response: Response<MarvelResponse<MarvelCharacterEntity>>
                 ) {
                     if (response.isSuccessful) {
                         val characters = response.body()?.data?.results
@@ -48,7 +48,7 @@ object MarvelRepository {
                     }
                 }
 
-                override fun onFailure(call: Call<MarvelResponse<MarvelCharacter>>, t: Throwable) {
+                override fun onFailure(call: Call<MarvelResponse<MarvelCharacterEntity>>, t: Throwable) {
                     onError.invoke(t)
                 }
             })
