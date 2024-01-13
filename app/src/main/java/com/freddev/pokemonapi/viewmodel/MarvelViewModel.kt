@@ -50,8 +50,6 @@ class MarvelViewModel(context: Context) : ViewModel() {
         )
     }
 }
-///TODO #1: Diseñar xml para detalles del personaje por medio de un custom Component y mejorar el diseño del item usado en el adapter del recycler
-
 ///TODO #2: Mejorar la forma en mostrar al usuario que no hay conexión, a la par de implementar shimerSkeleton
 
 ///TODO #3: Implementar inyección de dependencias con Hilt-Dagger
